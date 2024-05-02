@@ -3,4 +3,4 @@ Artificial neural network classifier trained by backpropagation for face recogni
 
 # Technology used
 - Python 3.11
-- PyTorch - python machine learning library
+- TensorFflow - python machine learning library
