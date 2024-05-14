@@ -11,6 +11,7 @@
 \usepackage[most]{tcolorbox} % used for notes
 \usepackage{graphicx} % used for inserting images
 % \usepackage{float} % used for fixing image in place
+\usepackage{enumitem} % used for removing spaces between lines
 
 \author{
   Jakub Czermański\\
@@ -25,6 +26,9 @@
 % Define how code should be displayed
 % https://www.overleaf.com/learn/latex/Code_Highlighting_with_minted
 % for minted, removes heading spaces: https://tex.stackexchange.com/questions/423275/minted-aligning-code-fragments-left
+
+% remove spaces between items in lists:
+\setlist{noitemsep}
 
 \setcounter{tocdepth}{3} % set depth in the table of contents to 3
 \hypersetup{
@@ -75,6 +79,8 @@
   \section{Introduction}
     Lorem ipsum
     \subsection*{Data description}
+      famous48 is a set of example images contained faces of 48 famous persons like sportsmens, politicians, actors or television stars. It was divided into 3 files: x24x24.txt, y24x24.txt, z24x24.txt, each containing 16 personal classes.
+      \\\\
       Attributes description:
       \begin{itemize}
         \item a1 - face containing flag: (1-with face, 0-without face)
@@ -89,7 +95,6 @@
     % asdf
     % \\\\
     \mynote{Full code can be found in \textit{notebook\_keras.ipynb}. Due to limited space, we provide here only the most important code.}
-    \hyperlink{../notebook_keras.ipynb}{notebook\_keras.ipynb}
   \section{Libraries used}
     Firstly, we import all our libraries:
     \inputminted[linenos]{python}{code/imports.py}
@@ -101,15 +106,17 @@
     \subsection{Architectures}
       \subsubsection{AlexNet}
         Firstly, we implemented AlexNet model (\url{https://papers.nips.cc/paper_files/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html})
-        which won the 2012 ILfRC challenge. Here is our model in python code, after downscaling it and changing some parameters:
+        which won the 2012 ILFRC challenge. Here is our model in python code, after downscaling it and changing some parameters:
         \inputminted[linenos]{python}{code/alexnet.py}
         \paragraph{Hyperparameters \& methods used:}
           \begin{itemize}
-            \item optimzer: Adam, with learning rate = 0.001
-            \item epochs = 250
-            \item batch size = 200
-            \item validation set size = 20\% of the training set
-            \item shuffle the training data before each epoch
+            \item \textit{optimizer}: Adam, with \textit{learning rate} = 0.001
+            \item \textit{epochs} = 250
+            \item \textit{batch size} = 200
+            \item \textit{validation set size} = 20\% of the training set
+            \item \textit{shuffle} the training data before each epoch
+            \item L2 regularization for convolutional layers: $l = 0.0006$
+            \item L2 regularization for the dense layer: $l = 0.01$
           \end{itemize}
         \paragraph{Results:} (rounded to 3 decimal places)
           \begin{itemize}
@@ -117,9 +124,8 @@
             \item train loss: 0.775
             \item validation set accuracy: 0.81
             \item validation set loss: 1.115
-            \item test set accuracy: 0.8
+            \item test set accuracy: \textbf{0.8}
             \item test set loss: 1.137
-            \item Graph:
           \end{itemize}
               \begin{figure}[H]
                 \includegraphics[width=\linewidth]{images/alex-net.png}
@@ -129,7 +135,35 @@
         \paragraph{Conclusions:} \mbox{} \\\\
         We decided that 80\% is not enough so we did not tune hyperparameters.
       \subsubsection{LeNet-5}
-
+        Next, we decided to used LeNet-5 architecture, presented below:
+        \inputminted[linenos]{python}{code/lenet.py}
+        \paragraph{Hyperparameters \& methods used:}
+        \begin{itemize}
+          \item \textit{optimizer}: Adam, with \textit{learning rate} = 0.001
+          \item \textit{epochs} = 100
+          \item \textit{batch size} = 200
+          \item \textit{validation set size} = 20\% of the training set
+          \item \textit{shuffle} the training data before each epoch
+          \item L2 regularization for convolutional layers: $l \approx 0.00091$
+          \item L2 regularization for the dense layer: $l \approx ?(to-do)$
+        \end{itemize}
+        \paragraph{Results:} (rounded to 2(to-do: change to 3) decimal places)
+          \begin{itemize}
+            \item train set accuracy: 0.92
+            \item train loss: ?
+            \item validation set accuracy: 0.82
+            \item validation set loss: ?
+            \item test set accuracy: \textbf{0.82}
+            \item test set loss: ?
+          \end{itemize}
+              \begin{figure}[H]
+                \includegraphics[width=\linewidth]{images/lenet.png}
+                \caption{Model accuracy for LeNet-5 architecture - training \& validation sets}
+                \label{fig:lenet}
+              \end{figure}
+        \paragraph{Conclusions:} \mbox{} \\\\
+        The model after 20 epochs starts overfitting and validation set's accuracy improves very slowly.
+    \section{Final model}
 
 
 \end{document}
