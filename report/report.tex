@@ -103,40 +103,43 @@
     \inputminted[linenos]{python}{code/loading.py}
   \section{Testing}
     Here are our all attempts at finding the best model. We tried out different architectures and hyperparameters to achieve that goal.
-    \subsection{Architectures}
-      \subsubsection{AlexNet}
-        Firstly, we implemented AlexNet model (\url{https://papers.nips.cc/paper_files/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html})
-        which won the 2012 ILFRC challenge. Here is our model in python code, after downscaling it and changing some parameters:
-        \inputminted[linenos]{python}{code/alexnet.py}
-        \paragraph{Hyperparameters \& methods used:}
-          \begin{itemize}
-            \item \textit{optimizer}: Adam, with \textit{learning rate} = 0.001
-            \item \textit{epochs} = 250
-            \item \textit{batch size} = 200
-            \item \textit{validation set size} = 20\% of the training set
-            \item \textit{shuffle} the training data before each epoch
-            \item L2 regularization for convolutional layers: $l = 0.0006$
-            \item L2 regularization for the dense layer: $l = 0.01$
-          \end{itemize}
-        \paragraph{Results:} (rounded to 3 decimal places)
-          \begin{itemize}
-            \item train set accuracy: 0.896
-            \item train loss: 0.775
-            \item validation set accuracy: 0.81
-            \item validation set loss: 1.115
-            \item test set accuracy: \textbf{0.8}
-            \item test set loss: 1.137
-          \end{itemize}
-              \begin{figure}[H]
-                \includegraphics[width=\linewidth]{images/alex-net.png}
-                \caption{Model accuracy for AlexNet architecture - training \& validation sets}
-                \label{fig:alex-net}
-              \end{figure}
-        \paragraph{Conclusions:} \mbox{} \\\\
-        We decided that 80\% is not enough so we did not tune hyperparameters.
-      \subsubsection{LeNet-5}
-        Next, we decided to used LeNet-5 architecture, presented below:
+    \subsection{AlexNet}
+      Firstly, we implemented AlexNet model (\url{https://papers.nips.cc/paper_files/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html})
+      which won the 2012 ILFRC challenge. Here is our model in python code, after downscaling it and changing some parameters:
+      \inputminted[linenos]{python}{code/alexnet.py}
+      \paragraph{Hyperparameters \& methods used:}
+        \begin{itemize}
+          \item \textit{optimizer}: Adam, with \textit{learning rate} = 0.001
+          \item \textit{epochs} = 250
+          \item \textit{batch size} = 200
+          \item \textit{validation set size} = 20\% of the training set
+          \item \textit{shuffle} the training data before each epoch
+          \item L2 regularization for convolutional layers: $l = 0.0006$
+          \item L2 regularization for the dense layer: $l = 0.01$
+        \end{itemize}
+      \paragraph{Results:} (rounded to 3 decimal places)
+        \begin{itemize}
+          \item train set accuracy: 0.896
+          \item train loss: 0.775
+          \item validation set accuracy: 0.81
+          \item validation set loss: 1.115
+          \item test set accuracy: \textbf{0.8}
+          \item test set loss: 1.137
+        \end{itemize}
+            \begin{figure}[H]
+              \includegraphics[width=\linewidth]{images/alex-net.png}
+              \caption{Model accuracy for AlexNet architecture - training \& validation sets}
+              \label{fig:alex-net}
+            \end{figure}
+      \paragraph{Conclusions:} \mbox{} \\\\
+      We decided that 80\% is not enough so we did not tune hyperparameters.
+    \subsection{LeNet-5}
+      Next, we decided to used LeNet-5 architecture. a
+      \subsubsection{Base model}
         \inputminted[linenos]{python}{code/lenet.py}
+      \subsubsection{Testing hyperparameters}
+        \paragraph{Attempt 1} \mbox{} \\
+        We select all hyperparameters by hand
         \paragraph{Hyperparameters \& methods used:}
         \begin{itemize}
           \item \textit{optimizer}: Adam, with \textit{learning rate} = 0.001
@@ -147,7 +150,7 @@
           \item L2 regularization for convolutional layers: $l = 0.0006$
           \item L2 regularization for the dense layer: $l = 0.01$
         \end{itemize}
-        \paragraph{Results:} (rounded to 3 decimal places)
+        \paragraph{Results:}
           \begin{itemize}
             \item train set accuracy: 0.805
             \item train loss: 1.07
@@ -161,8 +164,36 @@
                 \caption{Model accuracy for LeNet-5 architecture - training \& validation sets}
                 \label{fig:lenet}
               \end{figure}
+        \paragraph{Attempt 2} \mbox{} \\
+        \par We used optuna to find hyperparameters for regularization,
+        introduced decaying learning rate and increased number of epochs to 1000.
+        \paragraph{Hyperparameters \& methods used:}
+        \begin{itemize}
+          \item \textit{optimizer}: Adam, with starting \textit{learning rate} = 0.001, and decreasing by 50\% each 150 epochs
+          \item \textit{epochs} = 1000
+          \item \textit{batch size} = 200
+          \item \textit{validation set size} = 20\% of the training set
+          \item \textit{shuffle} the training data before each epoch
+          \item L2 regularization for convolutional layers: $l \approx 0.00061$
+          \item L2 regularization for the dense layer: $l \approx 0.0301$
+        \end{itemize}
+        \paragraph{Results:}
+          \begin{itemize}
+            \item train set accuracy: 0.981
+            \item train loss: 0.337
+            \item validation set accuracy: 0.878
+            \item validation set loss: 0.651
+            \item test set accuracy: \textbf{0.892}
+            \item test set loss: 0.629
+          \end{itemize}
+              \begin{figure}[H]
+                \includegraphics[width=\linewidth]{images/lenet2.png}
+                \caption{Model accuracy for LeNet-5 with optimized hyperparameters}
+                \label{fig:lenet2}
+              \end{figure}
         \paragraph{Conclusions:} \mbox{} \\\\
         The model after 20 epochs starts overfitting and validation set's accuracy improves very slowly.
+        \\(to-do)
     \section{Final model}
       As our final model we decided to have Lenet-5 because \dots
       \inputminted[linenos]{python}{code/final_model.py}

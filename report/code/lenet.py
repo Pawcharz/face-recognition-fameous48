@@ -1,8 +1,8 @@
 conv_regularizer = regularizers.l2(0.0006)
 dense_regularizer = regularizers.l2(0.01)
 
-DefaultConv2D = partial(tf.keras.layers.Conv2D, kernel_size=5, padding="same", activation="tanh",
-                        kernel_regularizer=conv_regularizer)
+DefaultConv2D = partial(tf.keras.layers.Conv2D, kernel_size=5, padding="same",
+                        activation="tanh", kernel_regularizer=conv_regularizer)
 
 model = Sequential(
   [
@@ -19,7 +19,8 @@ model = Sequential(
 
     layers.Flatten(),
     layers.Dropout(0.15),
-    layers.Dense(84, activation=activation_def, kernel_regularizer=dense_regularizer),
+    layers.Dense(84, activation=activation_def,
+                kernel_regularizer=dense_regularizer),
     layers.Dense(CLASSES, activation='softmax'),
   ]
 )
