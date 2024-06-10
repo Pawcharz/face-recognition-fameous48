@@ -5,7 +5,7 @@
 % \usepackage{xcolor} % used to define custom colors and use already defined ones
 \usepackage{hyperref} % used for links in table of contents
 \usepackage{tocbibind} % used for depth in table of contents
-\usepackage[a4paper, margin=3cm]{geometry} % increase page margins
+\usepackage[a4paper, margin=2cm]{geometry} % increase page margins
 \usepackage{minted} % used for code highlighting
 \usepackage{blindtext} % used for inserting lorem ipsum (\blindtext)
 \usepackage[most]{tcolorbox} % used for notes
@@ -77,7 +77,11 @@
   \pagenumbering{arabic}
 
   \section{Introduction}
-    Lorem ipsum
+    In this project we have 24x24 images of famous people and our goal is to create
+    a model that can predict who the person is given the image. In order to do it,
+    we divided our data into training, validation and test sets (validation set
+    is created during learning - in fit() function). We use Convolutional Neural Networks
+    and tested 2 popular CNN architectures: AlexNet and LeNet-5.
     \subsection*{Data description}
       famous48 is a set of example images contained faces of 48 famous persons like sportsmens, politicians, actors or television stars. It was divided into 3 files: x24x24.txt, y24x24.txt, z24x24.txt, each containing 16 personal classes.
       \\\\
@@ -94,7 +98,9 @@
       \end{itemize}
     % asdf
     % \\\\
-    \mynote{Full code can be found in \textit{notebook\_keras.ipynb}. Due to limited space, we provide here only the most important code.}
+    \mynote{Full code can be found in \textit{notebook\_keras.ipynb, lenet.ipynb,
+    alexnet.ipynb} and \textit{after\_optuna\_training.ipynb}.
+    Due to limited space, we provide here only the most important code.}
   \section{Libraries used}
     Firstly, we import all our libraries:
     \inputminted[linenos]{python}{code/imports.py}
@@ -131,15 +137,16 @@
               \caption{Model accuracy for AlexNet architecture - training \& validation sets}
               \label{fig:alex-net}
             \end{figure}
-      \paragraph{Conclusions:} \mbox{} \\\\
+      \paragraph{Conclusions} \mbox{} \\
       We decided that 80\% is not enough so we did not tune hyperparameters.
     \subsection{LeNet-5}
       Next, we decided to used LeNet-5 architecture. a
       \subsubsection{Base model}
         \inputminted[linenos]{python}{code/lenet.py}
       \subsubsection{Testing hyperparameters}
-        \paragraph{Attempt 1} \mbox{} \\
-        We select all hyperparameters by hand
+        \paragraph{Attempt 1} \mbox{} \\\\
+        We decided to stay with Adam optimizer and \textit{learning rate} = 0.001.
+        We select regularization hyperparameters by hand (0.0006 and 0.01).
         \paragraph{Hyperparameters \& methods used:}
         \begin{itemize}
           \item \textit{optimizer}: Adam, with \textit{learning rate} = 0.001
@@ -156,17 +163,28 @@
             \item train loss: 1.07
             \item validation set accuracy: 0.81
             \item validation set loss: 1.08
-            \item test set accuracy: \textbf{0.81}
-            \item test set loss: 1.08
+            \item test set accuracy: \textbf{0.794}
+            \item test set loss: 1.095
           \end{itemize}
               \begin{figure}[H]
                 \includegraphics[width=\linewidth]{images/lenet.png}
-                \caption{Model accuracy for LeNet-5 architecture - training \& validation sets}
+                \caption{Model accuracy for LeNet-5 architecture - training \& validation sets, 100 epochs}
                 \label{fig:lenet}
               \end{figure}
+        \paragraph{Conclusions} \mbox{} \\
+          Results looked promising so we decided to test this model for 1000 epochs but unfortunately it
+          started overfitting pretty soon and we achieved only \textbf{84.6\%} test set accuracy.
+          Here is a graph representing results for the same model but for 1000 epochs:
+          \begin{figure}[H]
+            \includegraphics[width=\linewidth]{images/lenet1.png}
+            \caption{Model accuracy for LeNet-5 architecture - training \& validation sets, 1000 epochs}
+            \label{fig:lenet1}
+          \end{figure}
         \paragraph{Attempt 2} \mbox{} \\
-        \par We used optuna to find hyperparameters for regularization,
-        introduced decaying learning rate and increased number of epochs to 1000.
+        \par We decided to find better hyperparameters ($l$) for regularization and
+        we used optuna to do this (the values are presented below).
+        \par We also introduced decaying learning rate and trained the model for 1000 epochs.
+        This time we got much better results.
         \paragraph{Hyperparameters \& methods used:}
         \begin{itemize}
           \item \textit{optimizer}: Adam, with starting \textit{learning rate} = 0.001, and decreasing by 50\% each 150 epochs
@@ -191,12 +209,15 @@
                 \caption{Model accuracy for LeNet-5 with optimized hyperparameters}
                 \label{fig:lenet2}
               \end{figure}
-        \paragraph{Conclusions:} \mbox{} \\\\
-        The model after 20 epochs starts overfitting and validation set's accuracy improves very slowly.
-        \\(to-do)
-    \section{Final model}
-      As our final model we decided to have Lenet-5 because \dots
-      \inputminted[linenos]{python}{code/final_model.py}
+        \paragraph{Conclusions} \mbox{} \\
+        Hyperparameter tuning along with decaying learning rate helped
+        us achieve higher prediction accuracy - from \textbf{84.6\%} in our first attempt
+        to \textbf{89.2\%} in the second attempt. We are satisfied with the resulting model
+        and its results.
+    \section{Summary}
+      To sum up, we used 2 different CNN architectures to train our models and
+      while AlexNet performed pretty poorly, the LeNet, after some hyperparameter
+      tuning, achieved very good results: \textbf{89.2\%} test set accuracy.
 
 
 \end{document}
